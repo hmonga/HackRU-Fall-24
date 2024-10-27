@@ -19,9 +19,12 @@ const UsersPage = () => {
   const [newReminder, setNewReminder] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [currentDate, setCurrentDate] = useState<Date | null>(null);
 
   useEffect(() => {
+    // Set the current date only on the client side
+    setCurrentDate(new Date());
+
     const interval = setInterval(() => {
       setCurrentDate(new Date());
     }, 60000); // Update every minute
@@ -105,7 +108,7 @@ const UsersPage = () => {
           components={{
             toolbar: CustomToolbar,
           }}
-          defaultDate={currentDate}
+          defaultDate={currentDate || new Date()}
           eventPropGetter={(event) => ({
             style: {
               backgroundColor: '#3174ad', // Customize the background color
@@ -116,6 +119,7 @@ const UsersPage = () => {
           })}
         />
       </div>
+      {currentDate && <div>Current Date: {currentDate.toLocaleString()}</div>}
     </div>
   );
 };
