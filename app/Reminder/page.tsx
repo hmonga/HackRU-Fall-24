@@ -22,14 +22,16 @@ const UsersPage = () => {
   const [currentDate, setCurrentDate] = useState<Date | null>(null);
 
   useEffect(() => {
-    // Set the current date only on the client side
-    setCurrentDate(new Date());
-
-    const interval = setInterval(() => {
+    if (typeof window !== 'undefined') {
+      // Set the current date only on the client side
       setCurrentDate(new Date());
-    }, 60000); // Update every minute
 
-    return () => clearInterval(interval);
+      const interval = setInterval(() => {
+        setCurrentDate(new Date());
+      }, 60000); // Update every minute
+
+      return () => clearInterval(interval);
+    }
   }, []);
 
   const addReminder = () => {
@@ -99,25 +101,27 @@ const UsersPage = () => {
         ))}
       </ul>
       <div className="calendar-container">
-        <Calendar
-          localizer={localizer}
-          events={events}
-          startAccessor="start"
-          endAccessor="end"
-          style={{ height: '100%' }}
-          components={{
-            toolbar: CustomToolbar,
-          }}
-          defaultDate={currentDate || new Date()}
-          eventPropGetter={(event) => ({
-            style: {
-              backgroundColor: '#3174ad', // Customize the background color
-              color: 'white', // Customize the text color
-              borderRadius: '5px',
-              border: 'none',
-            },
-          })}
-        />
+        {currentDate && (
+          <Calendar
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: '100%' }}
+            components={{
+              toolbar: CustomToolbar,
+            }}
+            defaultDate={currentDate}
+            eventPropGetter={(event) => ({
+              style: {
+                backgroundColor: '#3174ad', // Customize the background color
+                color: 'white', // Customize the text color
+                borderRadius: '5px',
+                border: 'none',
+              },
+            })}
+          />
+        )}
       </div>
       {currentDate && <div>Current Date: {currentDate.toLocaleString()}</div>}
     </div>
